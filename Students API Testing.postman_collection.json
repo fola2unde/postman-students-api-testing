@@ -1,7 +1,7 @@
 {
 	"info": {
-		"_postman_id": "69b06444-4acc-4232-a249-727409cce8c2",
-		"name": "Students API Testing",
+		"_postman_id": "f890abf3-4551-4dc1-95e4-3359af8793cc",
+		"name": "Students API Variables",
 		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
 		"_exporter_id": "20656269"
 	},
@@ -114,12 +114,10 @@
 				"method": "GET",
 				"header": [],
 				"url": {
-					"raw": "http://localhost:3000/students/1",
-					"protocol": "http",
+					"raw": "{{url_global}}/students/1",
 					"host": [
-						"localhost"
+						"{{url_global}}"
 					],
-					"port": "3000",
 					"path": [
 						"students",
 						"1"
@@ -129,19 +127,22 @@
 			"response": []
 		},
 		{
-			"name": "Get All Students Data",
+			"name": "Delete New Student",
 			"request": {
-				"method": "GET",
+				"method": "DELETE",
 				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"id\": \"4\",\r\n    \"name\": \"Scott\",\r\n    \"location\": \"France\",\r\n    \"phone\": \"0989565899\",\r\n    \"courses\": [\r\n        \"C++\",\r\n        \"Rest Assured\"\r\n    ]\r\n}"
+				},
 				"url": {
-					"raw": "http://localhost:3000/students",
-					"protocol": "http",
+					"raw": "{{url_global}}/students/5",
 					"host": [
-						"localhost"
+						"{{url_global}}"
 					],
-					"port": "3000",
 					"path": [
-						"students"
+						"students",
+						"5"
 					]
 				}
 			},
@@ -162,12 +163,27 @@
 					}
 				},
 				"url": {
-					"raw": "http://localhost:3000/students",
-					"protocol": "http",
+					"raw": "{{url_qa_env}}/students",
 					"host": [
-						"localhost"
+						"{{url_qa_env}}"
 					],
-					"port": "3000",
+					"path": [
+						"students"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Get All Students Data",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{url_collect}}/students",
+					"host": [
+						"{{url_collect}}"
+					],
 					"path": [
 						"students"
 					]
@@ -177,6 +193,54 @@
 		},
 		{
 			"name": "Update New Student",
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"exec": [
+							"// Local variable\r",
+							"pm.variables.set(\"url_local\",\"http://localhost:3000\");\r",
+							"\r",
+							"// Global variable\r",
+							"pm.globals.set(\"userid_global\",\"2\");\r",
+							"\r",
+							"//Environment variable\r",
+							"pm.environment.set(\"suerid_qa_env\",\"4\");\r",
+							"\r",
+							"//Collection variable\r",
+							"pm.collectionVariables.set(\"userid_collect\",\"4\");"
+						],
+						"type": "text/javascript",
+						"packages": {},
+						"requests": {}
+					}
+				},
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"// Get and print values from variables\r",
+							"console.log(pm.globals.get(\"userid_global\"));\r",
+							"console.log(pm.environment.get(\"suerid_qa_env\"));\r",
+							"console.log(pm.collectionVariables.get(\"userid_collect\"));\r",
+							"console.log(pm.variables.get(\"url_local\"));\r",
+							"\r",
+							"\r",
+							"// Global variable\r",
+							"pm.globals.unset(\"userid_global\",\"2\");\r",
+							"\r",
+							"//Environment variable\r",
+							"pm.environment.unset(\"suerid_qa_env\",\"4\");\r",
+							"\r",
+							"//Collection variable\r",
+							"pm.collectionVariables.unset(\"userid_collect\",\"4\");"
+						],
+						"type": "text/javascript",
+						"packages": {},
+						"requests": {}
+					}
+				}
+			],
 			"request": {
 				"method": "PUT",
 				"header": [],
@@ -190,43 +254,47 @@
 					}
 				},
 				"url": {
-					"raw": "http://localhost:3000/students/4",
-					"protocol": "http",
+					"raw": "{{url_local}}/students/{{suerid_qa_env}}",
 					"host": [
-						"localhost"
+						"{{url_local}}"
 					],
-					"port": "3000",
 					"path": [
 						"students",
-						"4"
+						"{{suerid_qa_env}}"
 					]
 				}
 			},
 			"response": []
+		}
+	],
+	"event": [
+		{
+			"listen": "prerequest",
+			"script": {
+				"type": "text/javascript",
+				"packages": {},
+				"requests": {},
+				"exec": [
+					""
+				]
+			}
 		},
 		{
-			"name": "Delete New Student",
-			"request": {
-				"method": "DELETE",
-				"header": [],
-				"body": {
-					"mode": "raw",
-					"raw": "{\r\n    \"id\": \"4\",\r\n    \"name\": \"Scott\",\r\n    \"location\": \"France\",\r\n    \"phone\": \"0989565899\",\r\n    \"courses\": [\r\n        \"C++\",\r\n        \"Rest Assured\"\r\n    ]\r\n}"
-				},
-				"url": {
-					"raw": "http://localhost:3000/students/5",
-					"protocol": "http",
-					"host": [
-						"localhost"
-					],
-					"port": "3000",
-					"path": [
-						"students",
-						"5"
-					]
-				}
-			},
-			"response": []
+			"listen": "test",
+			"script": {
+				"type": "text/javascript",
+				"packages": {},
+				"requests": {},
+				"exec": [
+					""
+				]
+			}
+		}
+	],
+	"variable": [
+		{
+			"key": "url_collect",
+			"value": ""
 		}
 	]
 }
