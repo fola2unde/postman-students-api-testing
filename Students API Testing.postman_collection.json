@@ -1,11 +1,54 @@
 {
 	"info": {
-		"_postman_id": "f890abf3-4551-4dc1-95e4-3359af8793cc",
-		"name": "Students API Variables",
+		"_postman_id": "0c392e10-7037-4788-9ec6-ed8607d1d413",
+		"name": "Students API Chaining",
 		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
 		"_exporter_id": "20656269"
 	},
 	"item": [
+		{
+			"name": "Create New Student",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"const jsonData = pm.response.json();\r",
+							"pm.environment.set(\"id\", jsonData.id);\r",
+							""
+						],
+						"type": "text/javascript",
+						"packages": {},
+						"requests": {}
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n        // \"id\": \"5\",\r\n        \"name\": \"Scott\",\r\n        \"location\": \"France\",\r\n        \"phone\": \"0989565899\",\r\n        \"courses\": [\r\n            \"C#\",\r\n            \"SOAPAPI\"\r\n        ]\r\n    }",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:3000/students",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "3000",
+					"path": [
+						"students"
+					]
+				}
+			},
+			"response": []
+		},
 		{
 			"name": "Get Single Student",
 			"event": [
@@ -114,13 +157,15 @@
 				"method": "GET",
 				"header": [],
 				"url": {
-					"raw": "{{url_global}}/students/1",
+					"raw": "http://localhost:3000/students/{{id}}",
+					"protocol": "http",
 					"host": [
-						"{{url_global}}"
+						"localhost"
 					],
+					"port": "3000",
 					"path": [
 						"students",
-						"1"
+						"{{id}}"
 					]
 				}
 			},
@@ -136,39 +181,15 @@
 					"raw": "{\r\n    \"id\": \"4\",\r\n    \"name\": \"Scott\",\r\n    \"location\": \"France\",\r\n    \"phone\": \"0989565899\",\r\n    \"courses\": [\r\n        \"C++\",\r\n        \"Rest Assured\"\r\n    ]\r\n}"
 				},
 				"url": {
-					"raw": "{{url_global}}/students/5",
+					"raw": "http://localhost:3000/students/{{id}}",
+					"protocol": "http",
 					"host": [
-						"{{url_global}}"
+						"localhost"
 					],
+					"port": "3000",
 					"path": [
 						"students",
-						"5"
-					]
-				}
-			},
-			"response": []
-		},
-		{
-			"name": "Create New Student",
-			"request": {
-				"method": "POST",
-				"header": [],
-				"body": {
-					"mode": "raw",
-					"raw": "{\r\n        \"id\": \"5\",\r\n        \"name\": \"Scott\",\r\n        \"location\": \"France\",\r\n        \"phone\": \"0989565899\",\r\n        \"courses\": [\r\n            \"C#\",\r\n            \"SOAPAPI\"\r\n        ]\r\n    }",
-					"options": {
-						"raw": {
-							"language": "json"
-						}
-					}
-				},
-				"url": {
-					"raw": "{{url_qa_env}}/students",
-					"host": [
-						"{{url_qa_env}}"
-					],
-					"path": [
-						"students"
+						"{{id}}"
 					]
 				}
 			},
@@ -180,10 +201,12 @@
 				"method": "GET",
 				"header": [],
 				"url": {
-					"raw": "{{url_collect}}/students",
+					"raw": "http://localhost:3000/students",
+					"protocol": "http",
 					"host": [
-						"{{url_collect}}"
+						"localhost"
 					],
+					"port": "3000",
 					"path": [
 						"students"
 					]
@@ -193,54 +216,6 @@
 		},
 		{
 			"name": "Update New Student",
-			"event": [
-				{
-					"listen": "prerequest",
-					"script": {
-						"exec": [
-							"// Local variable\r",
-							"pm.variables.set(\"url_local\",\"http://localhost:3000\");\r",
-							"\r",
-							"// Global variable\r",
-							"pm.globals.set(\"userid_global\",\"2\");\r",
-							"\r",
-							"//Environment variable\r",
-							"pm.environment.set(\"suerid_qa_env\",\"4\");\r",
-							"\r",
-							"//Collection variable\r",
-							"pm.collectionVariables.set(\"userid_collect\",\"4\");"
-						],
-						"type": "text/javascript",
-						"packages": {},
-						"requests": {}
-					}
-				},
-				{
-					"listen": "test",
-					"script": {
-						"exec": [
-							"// Get and print values from variables\r",
-							"console.log(pm.globals.get(\"userid_global\"));\r",
-							"console.log(pm.environment.get(\"suerid_qa_env\"));\r",
-							"console.log(pm.collectionVariables.get(\"userid_collect\"));\r",
-							"console.log(pm.variables.get(\"url_local\"));\r",
-							"\r",
-							"\r",
-							"// Global variable\r",
-							"pm.globals.unset(\"userid_global\",\"2\");\r",
-							"\r",
-							"//Environment variable\r",
-							"pm.environment.unset(\"suerid_qa_env\",\"4\");\r",
-							"\r",
-							"//Collection variable\r",
-							"pm.collectionVariables.unset(\"userid_collect\",\"4\");"
-						],
-						"type": "text/javascript",
-						"packages": {},
-						"requests": {}
-					}
-				}
-			],
 			"request": {
 				"method": "PUT",
 				"header": [],
@@ -254,47 +229,19 @@
 					}
 				},
 				"url": {
-					"raw": "{{url_local}}/students/{{suerid_qa_env}}",
+					"raw": "http://localhost:3000/students/4",
+					"protocol": "http",
 					"host": [
-						"{{url_local}}"
+						"localhost"
 					],
+					"port": "3000",
 					"path": [
 						"students",
-						"{{suerid_qa_env}}"
+						"4"
 					]
 				}
 			},
 			"response": []
-		}
-	],
-	"event": [
-		{
-			"listen": "prerequest",
-			"script": {
-				"type": "text/javascript",
-				"packages": {},
-				"requests": {},
-				"exec": [
-					""
-				]
-			}
-		},
-		{
-			"listen": "test",
-			"script": {
-				"type": "text/javascript",
-				"packages": {},
-				"requests": {},
-				"exec": [
-					""
-				]
-			}
-		}
-	],
-	"variable": [
-		{
-			"key": "url_collect",
-			"value": ""
 		}
 	]
 }
