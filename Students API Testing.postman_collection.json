@@ -1,7 +1,7 @@
 {
 	"info": {
-		"_postman_id": "0c392e10-7037-4788-9ec6-ed8607d1d413",
-		"name": "Students API Chaining",
+		"_postman_id": "d97b2e8d-74b2-400f-ab66-71b0cabbd9e5",
+		"name": "Students API DataDriven",
 		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
 		"_exporter_id": "20656269"
 	},
@@ -15,7 +15,10 @@
 						"exec": [
 							"const jsonData = pm.response.json();\r",
 							"pm.environment.set(\"id\", jsonData.id);\r",
-							""
+							"\r",
+							"pm.test(\"Test response status code to be 201\", ()=>{\r",
+							"    pm.response.to.have.status(201);\r",
+							"});"
 						],
 						"type": "text/javascript",
 						"packages": {},
@@ -28,7 +31,7 @@
 				"header": [],
 				"body": {
 					"mode": "raw",
-					"raw": "{\r\n        // \"id\": \"5\",\r\n        \"name\": \"Scott\",\r\n        \"location\": \"France\",\r\n        \"phone\": \"0989565899\",\r\n        \"courses\": [\r\n            \"C#\",\r\n            \"SOAPAPI\"\r\n        ]\r\n    }",
+					"raw": "{\r\n        // \"id\": \"5\",\r\n        \"name\": \"Daren\",\r\n        \"location\": \"France\",\r\n        \"phone\": \"0989565899\",\r\n        \"courses\": [\r\n            \"C#\",\r\n            \"Selenium\"\r\n        ]\r\n    }",
 					"options": {
 						"raw": {
 							"language": "json"
@@ -50,7 +53,7 @@
 			"response": []
 		},
 		{
-			"name": "Get Single Student",
+			"name": "Get New Student Info",
 			"event": [
 				{
 					"listen": "test",
@@ -93,18 +96,228 @@
 							"\r",
 							"//test the array content.\r",
 							"pm.test(\"Test the array properties\", ()=>{\r",
-							"    pm.expect(jsonData.courses).to.include(\"Java\");\r",
-							"    pm.expect(jsonData.courses).to.have.members([\"Java\", \"Selenium\"]);\r",
+							"    pm.expect(jsonData.courses).to.include(\"C#\");\r",
+							"    pm.expect(jsonData.courses).to.have.members([\"C#\", \"Selenium\"]);\r",
 							"});\r",
 							"\r",
 							"//Validating json fields in response \r",
 							"\r",
-							"pm.test(\"test value all response fields\", ()=>{\r",
-							"    pm.expect(jsonData.id).to.eql(\"1\");\r",
-							"    pm.expect(jsonData.name).to.eql(\"John\");\r",
-							"    pm.expect(jsonData.location).to.eql(\"India\");\r",
-							"    pm.expect(jsonData.phone).to.eql(\"12345678899\");\r",
-							"    pm.expect(jsonData.courses[0]).to.eql(\"Java\");\r",
+							"pm.test(\"Test value all response fields\", ()=>{\r",
+							"    // pm.expect(jsonData.id).to.eql(\"{{id}}\");\r",
+							"    pm.expect(jsonData.name).to.eql(\"Daren\");\r",
+							"    pm.expect(jsonData.location).to.eql(\"France\");\r",
+							"    pm.expect(jsonData.phone).to.eql(\"0989565899\");\r",
+							"    pm.expect(jsonData.courses[0]).to.eql(\"C#\");\r",
+							"});\r",
+							"\r",
+							"//Json schema validation\r",
+							"const expectedJSONSchema ={\r",
+							"  \"type\": \"object\",\r",
+							"  \"properties\": {\r",
+							"    \"id\": {\r",
+							"      \"type\": \"string\"\r",
+							"    },\r",
+							"    \"name\": {\r",
+							"      \"type\": \"string\"\r",
+							"    },\r",
+							"    \"location\": {\r",
+							"      \"type\": \"string\"\r",
+							"    },\r",
+							"    \"phone\": {\r",
+							"      \"type\": \"string\"\r",
+							"    },\r",
+							"    \"courses\": {\r",
+							"      \"type\": \"array\",\r",
+							"      \"items\": [\r",
+							"        {\r",
+							"          \"type\": \"string\"\r",
+							"        },\r",
+							"        {\r",
+							"          \"type\": \"string\"\r",
+							"        }\r",
+							"      ]\r",
+							"    }\r",
+							"  },\r",
+							"  \"required\": [\r",
+							"    \"id\",\r",
+							"    \"name\",\r",
+							"    \"location\",\r",
+							"    \"phone\",\r",
+							"    \"courses\"\r",
+							"  ]\r",
+							"}\r",
+							"pm.test(\"validate json schema\", ()=>{\r",
+							"pm.response.to.have.jsonSchema(expectedJSONSchema)\r",
+							"});"
+						],
+						"type": "text/javascript",
+						"packages": {},
+						"requests": {}
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:3000/students/{{id}}",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "3000",
+					"path": [
+						"students",
+						"{{id}}"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Update New Student",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code is 200\", ()=>{\r",
+							"    pm.response.to.have.status(200);\r",
+							"});"
+						],
+						"type": "text/javascript",
+						"packages": {},
+						"requests": {}
+					}
+				}
+			],
+			"request": {
+				"method": "PUT",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    // \"id\": 4,\r\n    \"name\": \"Daren\",\r\n    \"location\": \"{{Location}}\",\r\n    \"phone\": \"0989565899\",\r\n    \"courses\": [\r\n        \"C#\",\r\n        \"Selenium\"\r\n    ]\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:3000/students/{{id}}",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "3000",
+					"path": [
+						"students",
+						"{{id}}"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Student Partial Update",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Test for response to have status code 200\", function(){\r",
+							"    pm.response.to.have.status(200);\r",
+							"});"
+						],
+						"type": "text/javascript",
+						"packages": {},
+						"requests": {}
+					}
+				}
+			],
+			"request": {
+				"method": "PATCH",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"phone\": \"{{PhoneNum}}\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:3000/students/{{id}}",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "3000",
+					"path": [
+						"students",
+						"{{id}}"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Get Student Updated Info",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Satus is 200\", ()=>{\r",
+							"    pm.response.to.have.status(200)\r",
+							"});\r",
+							"\r",
+							"pm.test.skip(\"Successful get request\", ()=>{\r",
+							"    pm.expect(pm.response.code).to.be.oneOf([200,201]);\r",
+							"});\r",
+							"\r",
+							"pm.test(\"Content-type headrer\", ()=>{\r",
+							"    pm.response.to.have.header('Content-Type');\r",
+							"});\r",
+							"\r",
+							"pm.test(\"Content-Type header type is application/json\", ()=>{\r",
+							"    pm.expect(pm.response.headers.get('Content-Type')).to.eql('application/json');\r",
+							"});\r",
+							"\r",
+							"pm.test(\"Cookie 'Cookie_1' is presesnt\", ()=>{\r",
+							"    pm.expect(pm.cookies.has('Cookie_1')).to.be.true;\r",
+							"});\r",
+							"pm.test(\"Cookie 'Cookie_1' 'value' is presesnt\", ()=>{\r",
+							"    pm.expect(pm.cookies.get('Cookie_1')).to.equal('value');\r",
+							"});\r",
+							"\r",
+							"pm.test(\"Response time is below 20m\", ()=>{\r",
+							"    pm.expect(pm.response.responseTime).to.be.below(20);\r",
+							"});\r",
+							"\r",
+							"const jsonData = pm.response.json();\r",
+							"pm.test(\"Test datatype of the response bosdy\",()=>{\r",
+							"    pm.expect(jsonData).to.be.an(\"object\");\r",
+							"    pm.expect(jsonData.name).to.be.a(\"string\");\r",
+							"    pm.expect(jsonData.id).to.be.a(\"string\");\r",
+							"    pm.expect(jsonData.courses).to.be.an(\"array\");\r",
+							"});\r",
+							"\r",
+							"//test the array content.\r",
+							"pm.test(\"Test the array properties\", ()=>{\r",
+							"    pm.expect(jsonData.courses).to.include(\"C#\");\r",
+							"    pm.expect(jsonData.courses).to.have.members([\"C#\", \"Selenium\"]);\r",
+							"});\r",
+							"\r",
+							"//Validating json fields in response \r",
+							"\r",
+							"pm.test(\"Test value all response fields\", ()=>{\r",
+							"    // pm.expect(jsonData.id).to.eql(\"{{id}}\");\r",
+							"    pm.expect(jsonData.name).to.eql(\"Daren\");\r",
+							"    pm.expect(jsonData.location).to.eql(\"{{Location}}\");\r",
+							"    pm.expect(jsonData.phone).to.eql(\"{{PhoneNum}}\");\r",
+							"    pm.expect(jsonData.courses[0]).to.eql(\"C#\");\r",
 							"});\r",
 							"\r",
 							"//Json schema validation\r",
@@ -173,6 +386,21 @@
 		},
 		{
 			"name": "Delete New Student",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Test response to have status code 200\", function(){\r",
+							"    pm.response.to.have.status(200);\r",
+							"});"
+						],
+						"type": "text/javascript",
+						"packages": {},
+						"requests": {}
+					}
+				}
+			],
 			"request": {
 				"method": "DELETE",
 				"header": [],
@@ -197,6 +425,21 @@
 		},
 		{
 			"name": "Get All Students Data",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Test response to have status code 200\", function(){\r",
+							"    pm.response.to.have.status(200);\r",
+							"});"
+						],
+						"type": "text/javascript",
+						"packages": {},
+						"requests": {}
+					}
+				}
+			],
 			"request": {
 				"method": "GET",
 				"header": [],
@@ -209,35 +452,6 @@
 					"port": "3000",
 					"path": [
 						"students"
-					]
-				}
-			},
-			"response": []
-		},
-		{
-			"name": "Update New Student",
-			"request": {
-				"method": "PUT",
-				"header": [],
-				"body": {
-					"mode": "raw",
-					"raw": "{\r\n    \"id\": 4,\r\n    \"name\": \"Scott\",\r\n    \"location\": \"England\",\r\n    \"phone\": \"09532678899\",\r\n    \"courses\": [\r\n        \"Java\",\r\n        \"Playwright\"\r\n    ]\r\n}",
-					"options": {
-						"raw": {
-							"language": "json"
-						}
-					}
-				},
-				"url": {
-					"raw": "http://localhost:3000/students/4",
-					"protocol": "http",
-					"host": [
-						"localhost"
-					],
-					"port": "3000",
-					"path": [
-						"students",
-						"4"
 					]
 				}
 			},
